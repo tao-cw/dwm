@@ -21,5 +21,19 @@ startup() {
         && st -e tmux &
 }
 
+daemons() {
+    [ $1 ] && sleep $1
+
+    [ -x "$(which picom 2> /dev/null)" ]\
+        && picom -b &
+
+    [ -x "$(which xbanish 2> /dev/null)" ]\
+        && xbanish &
+
+    [ -x "$(which fcitx5 2> /dev/null)" ]\
+        && fcitx5 -d 2> /dev/null &
+}
+
 cron &
+daemons &
 startup &
