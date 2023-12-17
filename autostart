@@ -1,39 +1,46 @@
 #!/bin/sh
 _thisdir=$(cd $(dirname $0); pwd)
 
+check() {
+  apps=('feh' 'icom' 'fcitx5' 'st' 'tmux' 'xbanish' 'lf')
+  files=("$HOME/Xmodmap" "$wallpaper")
+  for i in ${apps[*]} ${files[*]}
+  do
+    if ls '/bin/'$i &>/dev/null || ls $i &>/dev/null
+    then
+      echo &>/dev/null
+    else
+      echo bad
+    fi
+  done
+}
+
+statusbar() {
+  xsetroot -name "$(date '+%Y-%m-%d %H:%M')"
+}
+
 cron() {
-    [ $1 ] && sleep $1
-
-    i=0
-    while true
-    do
-        [ -x "$(which feh 2> /dev/null)" ] && [ $((i % 300)) -eq 0 ]\
-            && feh --randomize --bg-fill $wallpapers/*.png
-
-        sleep 2; i=$((i + 2))
-    done
+  i=0
+  while true
+  do
+    [ $((i % 300)) -eq 0 ] && feh --randomize --bg-fill $wallpapers/*.png
+    [ $((i % 2)) -eq 0 ] && statusbar
+    sleep 2; i=$((i + 2))
+  done
 }
 
 startup() {
-    [ $1 ] && sleep $1
-
-    [ -x "$(which st 2> /dev/null)" ]\
-        && st -e tmux &
+  st -e tmux &
 }
 
 daemons() {
-    [ $1 ] && sleep $1
-
-    [ -x "$(which picom 2> /dev/null)" ]\
-        && picom -b &
-
-    [ -x "$(which xbanish 2> /dev/null)" ]\
-        && xbanish &
-
-    [ -x "$(which fcitx5 2> /dev/null)" ]\
-        && fcitx5 -d 2> /dev/null &
+  picom -b &
+  xbanish &
+  fcitx5 -d 2> /dev/null &
+  lf -server &
 }
 
+check
 cron &
 daemons &
 startup &
