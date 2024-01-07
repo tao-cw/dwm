@@ -847,7 +847,7 @@ void
 focus(Client *c)
 {
 	if (!c || !ISVISIBLE(c))
-		for (c = selmon->stack; c && (!ISVISIBLE(c) || HIDDEN(c)); c = c->snext);
+		for (c = selmon->stack; c && (!ISVISIBLE(c) || HIDDEN(c)) && c->snext; c = c->snext);
 	if (selmon->sel && selmon->sel != c) {
 		unfocus(selmon->sel, 0);
 
@@ -1940,11 +1940,11 @@ togglewin(const Arg *arg)
 {
 	Client *c = (Client*)arg->v;
 
-	if (c == selmon->sel) {
-		hidewin(c);
-		focus(NULL);
-		arrange(c->mon);
-	} else {
+	if (!HIDDEN(c) && c == selmon->sel) {
+    hidewin(c);
+    focus(NULL);
+    arrange(c->mon);
+  } else {
 		if (HIDDEN(c))
 			showwin(c);
 		focus(c);
