@@ -2,15 +2,15 @@
 _thisdir=$(cd $(dirname $0); pwd)
 
 check() {
-  apps=('feh' 'icom' 'fcitx5' 'st' 'tmux' 'xbanish' 'lf')
-  files=("$HOME/Xmodmap" "$wallpaper")
+  apps=('dunst' 'feh' 'picom' 'fcitx5' 'st' 'tmux' 'xbanish' 'lf')
+  files=("$HOME/.Xmodmap" "$wallpaper")
   for i in ${apps[*]} ${files[*]}
   do
     if ls '/bin/'$i &>/dev/null || ls $i &>/dev/null
     then
       echo &>/dev/null
     else
-      echo bad
+      exit
     fi
   done
 }
@@ -35,7 +35,8 @@ startup() {
 
 daemons() {
   picom -b &
-  xbanish &
+  xbanish -m se&
+  dunst &
   fcitx5 -d 2> /dev/null &
   lf -server &
 }
