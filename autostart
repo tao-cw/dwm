@@ -16,7 +16,7 @@ check() {
 }
 
 statusbar() {
-  xsetroot -name "$(date '+%Y-%m-%d %H:%M')"
+  xsetroot -name "$(date '+%Y-%m-%d %H:%M') Disk:$(lsblk -f | awk '/ext4/ {print $5}') Ip:$(hostname -i)"
 }
 
 cron() {
@@ -35,7 +35,7 @@ startup() {
 
 daemons() {
   picom -b &
-  xbanish -m se&
+  xbanish -m ne&
   dunst &
   fcitx5 -d 2> /dev/null &
   lf -server &
