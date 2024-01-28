@@ -194,6 +194,7 @@ static long getstate(Window w);
 static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void grabbuttons(Client *c, int focused);
 static void grabkeys(void);
+static void grid(Monitor *m);
 static void hide(const Arg *arg);
 static void hidewin(Client *c);
 static void incnmaster(const Arg *arg);
@@ -202,7 +203,6 @@ static void killclient(const Arg *arg);
 static void manage(Window w, XWindowAttributes *wa);
 static void mappingnotify(XEvent *e);
 static void maprequest(XEvent *e);
-static void monocle(Monitor *m);
 static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
 static Client *nexttiled(Client *c);
@@ -1115,6 +1115,72 @@ grabkeys(void)
 }
 
 void
+grid(Monitor *m)
+{
+  unsigned int i, n;
+  unsigned int cx, cy, cw, ch;
+  unsigned int dx;
+  unsigned int cols, rows, overcols;
+  Client *c;
+
+  for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+  if (n == 0) return;
+  if (n == 1) {
+    c = nexttiled(m->clients);
+    cw = (m->ww - 2 * m->gap->gappx) * 0.7;
+    ch = (m->wh - 2 * m->gap->gappx) * 0.65;
+    resize(c,
+        m->mx + (m->mw - cw) / 2 + m->gap->gappx,
+        m->my + (m->mh - ch) / 2 + m->gap->gappx,
+        cw - 2 * c->bw,
+        ch - 2 * c->bw,
+        0);
+    return;
+  }
+  if (n == 2) {
+    c = nexttiled(m->clients);
+    cw = (m->ww - 3 * m->gap->gappx) / 2;
+    ch = (m->wh - 2 * m->gap->gappx) * 0.65;
+    resize(c,
+        m->mx + m->gap->gappx,
+        m->my + (m->mh - ch) / 2 + m->gap->gappx,
+        cw - 2 * c->bw,
+        ch - 2 * c->bw,
+        0);
+    resize(nexttiled(c->next),
+        m->mx + cw + m->gap->gappx + m->gap->gappx,
+        m->my + (m->mh - ch) / 2 + m->gap->gappx,
+        cw - 2 * c->bw,
+        ch - 2 * c->bw,
+        0);
+    return;
+  }
+
+  for (cols = 0; cols <= n / 2; cols++)
+    if (cols * cols >= n)
+      break;
+  rows = (cols && (cols - 1) * cols >= n) ? cols - 1 : cols;
+  ch = (m->wh - 2 * m->gap->gappx - (rows - 1) * m->gap->gappx) / rows;
+  cw = (m->ww - 2 * m->gap->gappx - (cols - 1) * m->gap->gappx) / cols;
+
+  overcols = n % cols;
+  if (overcols) dx = (m->ww - overcols * cw - (overcols - 1) * m->gap->gappx) / 2 - m->gap->gappx;
+  for (i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+    cx = m->wx + (i % cols) * (cw + m->gap->gappx);
+    cy = m->wy + (i / cols) * (ch + m->gap->gappx);
+    if (overcols && i >= n - overcols) {
+      cx += dx;
+    }
+    resize(c,
+        cx + m->gap->gappx,
+        cy + m->gap->gappx,
+        cw - 2 * c->bw,
+        ch - 2 * c->bw,
+        0);
+  }
+}
+
+void
 hide(const Arg *arg)
 {
 	hidewin(selmon->sel);
@@ -1285,21 +1351,6 @@ maprequest(XEvent *e)
 		return;
 	if (!wintoclient(ev->window))
 		manage(ev->window, &wa);
-}
-
-void
-monocle(Monitor *m)
-{
-	unsigned int n = 0;
-	Client *c;
-
-	for (c = m->clients; c; c = c->next)
-		if (ISVISIBLE(c))
-			n++;
-	if (n > 0) /* override layout symbol */
-		snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n);
-	for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
-		resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, 0);
 }
 
 void
