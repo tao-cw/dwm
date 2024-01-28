@@ -28,9 +28,8 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* class          instance    title       tags mask     isfloating   monitor */
+	{ "Chromium",     NULL,       NULL,       1<<8,            0,           -1 },
 };
 
 /* layout(s) */
@@ -60,12 +59,15 @@ static const Layout layouts[] = {
 /* commands */
 static const char *termcmd[] = { "st", "-e", "tmux", NULL };
 static const char *trayer[] = { "tray", NULL };
+static const char scratchpadname[] = "scratchpad";
+static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-e", "tmux new ", "-s", scratchpadname, "-g", "80x18", NULL };
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_space,  spawn,          SHCMD("rofi -show drun") },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY|ShiftMask,             XK_t,      spawn,          {.v = trayer } },
+	{ MODKEY,                       XK_p,      togglescratch,  SHCMD("st -t scratchpad -g 80x18 -e tmux new -s scrathpad") },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstackvis,  {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstackvis,  {.i = -1 } },
