@@ -16,32 +16,34 @@ check() {
 }
 
 statusbar() {
-  xsetroot -name "$(date '+%Y-%m-%d %H:%M') Disk:$(lsblk -f | awk '/ext4/ {print $5}') Ip:$(hostname -i)"
+  xsetroot -name "$(date '+%Y-%m-%d %H:%M') Disk:$(lsblk -f | awk '/ext4/ {print $5}') Wifi:$(hostname -i)"
 }
 
 cron() {
   i=0
   while true
   do
-    [ $((i % 300)) -eq 0 ] && feh --randomize --bg-fill $wallpapers/*.png
     [ $((i % 2)) -eq 0 ] && statusbar
     sleep 2; i=$((i + 2))
   done
 }
 
 startup() {
-  st -e tmux &
+	[ $1 ] && sleep $1
+  feh --randomize --bg-fill $wallpapers/*.png
+	st -e tmux &
 }
 
 daemons() {
-  picom -b &
-  xbanish -m ne&
-  dunst &
-  fcitx5 -d 2> /dev/null &
-  lf -server &
+	[ $1 ] && sleep $1
+	xbanish -m ne &
+	dunst &
+	fcitx5 -d 2> /dev/null &
+	lf -server &
+  sleep 2 && picom -b
 }
 
 check
 cron &
-daemons &
 startup &
+daemons &
