@@ -40,7 +40,7 @@ daemons() {
 	dunst &
 	fcitx5 -d 2> /dev/null &
 	lf -server &
-  sleep 2 && picom -b
+  picom -b
 }
 
 check
