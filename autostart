@@ -6,7 +6,7 @@ check() {
   files=("$HOME/.Xmodmap" "$wallpaper")
   for i in ${apps[*]} ${files[*]}
   do
-    if ls '/bin/'$i &>/dev/null || ls $i &>/dev/null
+    if ls '/bin/'$i &>/dev/null || ls $i &>/dev/null || ls '/usr/local/bin/'$i &>/dev/null
     then
       echo &>/dev/null
     else
