@@ -1,22 +1,14 @@
 #!/bin/sh
 _thisdir=$(cd $(dirname $0); pwd)
-
-check() {
-  apps=('dunst' 'feh' 'picom' 'fcitx5' 'st' 'tmux' 'xbanish' 'lf')
-  files=("$HOME/.Xmodmap" "$wallpaper")
-  for i in ${apps[*]} ${files[*]}
-  do
-    if ls '/bin/'$i &>/dev/null || ls $i &>/dev/null || ls '/usr/local/bin/'$i &>/dev/null
-    then
-      echo &>/dev/null
-    else
-      exit
-    fi
-  done
-}
+ip4=$(ip -4 -br addr show wlp1s0 |  grep -o -E "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)")
+free_disk=$(lsblk -f | grep -Eo "[0-9.]+G")
 
 statusbar() {
-  xsetroot -name "$(date '+%Y-%m-%d %H:%M') Disk:$(lsblk -f | awk '/ext4/ {print $5}') Wifi:$(hostname -i)"
+  bat=$(cat /sys/class/power_supply/BATT/capacity)
+  free_mem=$(awk '/MemFree/ { printf "%.2f \n", $2/1024/1024 }' /proc/meminfo)
+  avg_load=$(awk '{print $1}' /proc/loadavg)
+
+  xsetroot -name "$(date '+%Y-%m-%d %H:%M') | BAT:$bat% | Wifi:$ip4 | Mem:${free_mem}G | Disk:$free_disk | Load:$avg_load"
 }
 
 cron() {
@@ -29,21 +21,20 @@ cron() {
 }
 
 startup() {
-	[ $1 ] && sleep $1
+  [ $1 ] && sleep $1
   feh --randomize --bg-fill $wallpapers/*.png
-	st -e tmux &
+  st -e tmux &
 }
 
 daemons() {
-	[ $1 ] && sleep $1
-	xbanish -m ne &
-	dunst &
-	fcitx5 -d 2> /dev/null &
-	lf -server &
+  [ $1 ] && sleep $1
+  xbanish -m se&
+  # dunst &
+  # fcitx5 -d 2> /dev/null &
+  lf -server &
   picom -b
 }
 
-check
 cron &
 startup &
 daemons &
