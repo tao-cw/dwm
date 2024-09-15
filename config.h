@@ -2,26 +2,32 @@
 
 /* appearance */
 static const unsigned int borderpx  = 0;        /* border pixel of windows */
-static const Gap default_gap        = {.isgap = 1, .realgap = 10, .gappx = 10};
-static const unsigned int snap      = 32;       /* snap pixel */
+static const Gap default_gap        = {.isgap = 1, .realgap = 5, .gappx = 5};
+static const unsigned int snap      = 1;        /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "sans:size=10" };
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
-static const char col_orange[]      = "#d65d0e";
+static const char *fonts[]          = { "Hack Nerd Font:size=10", "sans:size=10" };
+static const char col_gray0[]       = "#7c6f64";
+static const char col_gray1[]       = "#928374";
+static const char col_gray2[]       = "#a89984";
+static const char col_gray3[]       = "#eeeeee";
+static const char col_bg_dim[]      = "#141617";
+static const char col_bg0[]         = "#1d2021";
+static const char col_orange[]      = "#a9b665";
+static const char col_fg0[]         = "#d4be98";
+static const char col_blue[]        = "#7daea3";
+static const char col_red[]         = "#ea6962";
 static const char *colors[][3]      = {
-	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_orange},
-	[SchemeHid]  = { col_gray3, col_gray1, col_cyan  },
+	/*               fg						bg								border   */
+	[SchemeNorm] = { col_fg0, 		col_bg0,					col_gray2 },
+	[SchemeSel]  = { col_red, 		col_bg_dim,				col_gray2 },
+	[SchemeHid]  = { col_fg0, 		col_bg0,  				col_gray2 },
 };
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+
+ /* exec a script */
 static const char *autostartscript = "$DWM/autostart";
 
 static const Rule rules[] = {
@@ -29,9 +35,10 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class          instance    title       tags mask     isfloating   monitor */
-	{ "Chromium",     NULL,       NULL,       1<<8,            0,           -1 },
-	{ "Zathura",      NULL,       NULL,       1<<7,            0,           -1 },
+	/* class          instance    title                        tags mask     isfloating   monitor */
+	{ "Chromium",     NULL,       NULL,                        1<<8,            0,           -1 },
+	{ "Zathura",      NULL,       NULL,                        1<<7,            0,           -1 },
+	{ NULL,           NULL,       "Picture in picture",        0,               1,           -1 },
 };
 
 /* layout(s) */
@@ -59,7 +66,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static const char *termcmd[] = { "st", "-e", "tmux", NULL };
-static const char *trayer[] = { "tray", NULL };
+static const char *trayer[] = { "trayer", NULL };
 static const char scratchpadname[] = "scratchpad";
 
 static const Key keys[] = {
@@ -78,7 +85,8 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY,                       XK_c,      killclient,     {0} },
+	{ MODKEY,                       XK_s,      test,           {0} },
+	{ MODKEY,                       XK_q,      killclient,     {0} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_g,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
