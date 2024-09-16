@@ -18,6 +18,8 @@ cron() {
   while true
   do
     [ $((i % 2)) -eq 0 ] && statusbar
+    [ $((i % 600)) -eq 0 ] && feh --randomize --bg-fill $wallpapers/*.png
+
     sleep 2; i=$((i + 2))
   done
 }
@@ -25,14 +27,13 @@ cron() {
 startup() {
   [ $1 ] && sleep $1
   st -e tmux &
-  feh --randomize --bg-fill $wallpapers/*.png
 }
 
 daemons() {
   [ $1 ] && sleep $1
-  xbanish -m se&
+  xbanish -m nw&
   # dunst &
-  # fcitx5 -d 2> /dev/null &
+  fcitx5 -d 2> /dev/null &
   lf -server &
   picom -b
 }
