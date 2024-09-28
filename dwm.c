@@ -26,7 +26,6 @@
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
-#include <errno.h>
 #include <locale.h>
 #include <signal.h>
 #include <stdarg.h>
@@ -2030,8 +2029,8 @@ void toggleview(const Arg *arg) {
 }
 
 void togglewin(const Arg *arg) {
-	if (!(arg->v))
-		return;
+  if (!(arg->v))
+    return;
   Client *c = (Client *)arg->v;
 
   if (!HIDDEN(c) && c == selmon->sel) {
