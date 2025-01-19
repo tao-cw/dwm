@@ -3,14 +3,18 @@ _thisdir=$(cd $(dirname $0); pwd)
 
 _ifname=wlan0
 
+settings() {
+  xset r rate 330 50
+}
+
 statusbar() {
   bat=$(cat /sys/class/power_supply/BATT/capacity)
   free_mem=$(awk '/MemFree/ { printf "%.2f\n", $2/1024/1024 }' /proc/meminfo)
   avg_load=$(awk '{print $1}' /proc/loadavg)
-  ip4=$(ip -4 -br addr show ${_ifname} |  grep -o -E "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)")
   free_disk=$(df -h / | grep dev | cut -f 8 -d\ )
+  SSID=$(iw dev wlan0 link | awk '/SSID/ {print $2}')
 
-  xsetroot -name " $(date '+%H:%M')   $ip4   ${free_mem}G   $avg_load   $free_disk   $bat%"
+  xsetroot -name " $(date '+%H:%M')   ${SSID}   ${free_mem}G   $avg_load   $free_disk   $bat%"
 }
 
 cron() {
@@ -31,13 +35,15 @@ startup() {
 
 daemons() {
   [ $1 ] && sleep $1
-  xbanish -m ne&
+  flameshot &
+  xbanish -m ne &
   # dunst &
-  fcitx5 -d 2> /dev/null &
-  lf -server &
+  # fcitx5 -d 2> /dev/null &
+  # lf -server &
   picom -b
 }
 
+settings &
 startup &
 daemons &
 cron &
