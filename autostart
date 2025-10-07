@@ -1,5 +1,8 @@
 #!/bin/sh
-_thisdir=$(cd $(dirname $0); pwd)
+_thisdir=$(
+  cd $(dirname $0)
+  pwd
+)
 
 _ifname=wlan0
 
@@ -19,12 +22,13 @@ statusbar() {
 
 cron() {
   i=0
-  while true
-  do
+  while true; do
     [ $((i % 2)) -eq 0 ] && statusbar
+
     [ $((i % 600)) -eq 0 ] && feh --randomize --bg-fill $wallpapers/*.png
 
-    sleep 2; i=$((i + 2))
+    sleep 2
+    i=$((i + 2))
   done
 }
 
@@ -35,12 +39,13 @@ startup() {
 
 daemons() {
   [ $1 ] && sleep $1
-  [ -x `which flameshot` ] && flameshot &
-  [ -x `which xbanish` ] && xbanish -m ne &
-  [ -x `which dunst` ] && dunst &
-  [ -x `which fcitx5` ] && fcitx5 -d 2> /dev/null &
-  [ -x `which lf` ] && lf -server &
-  [ -x `which picom` ] && picom -b
+  [ -x $(which flameshot) ] && flameshot &
+  [ -x $(which xbanish) ] && xbanish -m ne &
+  [ -x $(which dunst) ] && dunst &
+  [ -x $(which fcitx5) ] && fcitx5 -d 2>/dev/null &
+  [ -x $(which lf) ] && lf -server &
+  [ -x $(which picom) ] && picom -b
+  [ -x $(which clipcatd) ] && clipcatd
 }
 
 settings &
