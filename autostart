@@ -13,11 +13,12 @@ settings() {
 statusbar() {
   bat=$(cat /sys/class/power_supply/BATT/capacity)
   free_mem=$(awk '/MemFree/ { printf "%.2f\n", $2/1024/1024 }' /proc/meminfo)
+  available_mem=$(awk '/MemAvailable/ { printf "%.2f\n", $2/1024/1024 }' /proc/meminfo)
   avg_load=$(awk '{print $1}' /proc/loadavg)
   free_disk=$(df -h / | grep dev | cut -f 8 -d\ )
   SSID=$(iw dev wlan0 link | awk '/SSID/ {print $2}')
 
-  xsetroot -name " $(date '+%H:%M')   ${SSID}   ${free_mem}G   $avg_load   $free_disk   $bat%"
+  xsetroot -name " $(date '+%H:%M')   ${SSID}   ${free_mem}/${available_mem}G   $avg_load   $free_disk   $bat%"
 }
 
 cron() {
