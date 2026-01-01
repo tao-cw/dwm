@@ -16,7 +16,8 @@ statusbar() {
   available_mem=$(awk '/MemAvailable/ { printf "%.2f\n", $2/1024/1024 }' /proc/meminfo)
   avg_load=$(awk '{print $1}' /proc/loadavg)
   free_disk=$(df -h / | grep dev | cut -f 8 -d\ )
-  SSID=$(iw dev wlan0 link | awk '/SSID/ {print $2}')
+  SSID=$(iwctl station wlan0 show | awk '/Connected network/ {print $3}'
+)
 
   xsetroot -name " $(date '+%H:%M')   ${SSID}   ${free_mem}/${available_mem}G   $avg_load   $free_disk   $bat%"
 }
