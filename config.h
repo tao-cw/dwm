@@ -82,6 +82,7 @@ static const char scratchpadname[] = "scratchpad";
 
 static const Key keys[] = {
     /* modifier                     key        function        argument */
+    {ControlMask, XK_F1, spawn, SHCMD("flameshot gui")},
     {MODKEY | ControlMask, XK_l, spawn, SHCMD("slock")},
     {MODKEY | ShiftMask, XK_Return, zoom, {0}},
     {MODKEY, XK_period, spawn, SHCMD("clipcat-menu")},
