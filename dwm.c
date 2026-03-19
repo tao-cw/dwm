@@ -501,7 +501,7 @@ void buttonpress(XEvent *e) {
       arg.ui = 1 << i;
     } else if (ev->x < x + TEXTW(selmon->ltsymbol))
       click = ClkLtSymbol;
-    /* 2px right padding */
+    /* 2px right padding , commit: 44dbc6809d05 */
     else if (ev->x > selmon->ww - TEXTW(stext) + lrpad - 2)
       click = ClkStatusText;
     else {
