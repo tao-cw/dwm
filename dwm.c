@@ -1011,10 +1011,10 @@ long getstate(Window w) {
 
   if (XGetWindowProperty(dpy, w, wmatom[WMState], 0L, 2L, False,
                          wmatom[WMState], &real, &format, &n, &extra,
-                         (unsigned char **)&p) != Success)
+                         &p) != Success)
     return -1;
-  if (n != 0)
-    result = *p;
+  if (n != 0 && format == 32)
+    result = *(long *)p;
   XFree(p);
   return result;
 }
