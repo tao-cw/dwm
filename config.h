@@ -6,7 +6,10 @@ static const Gap default_gap = {.isgap = 1, .realgap = 5, .gappx = 5};
 static const unsigned int snap = 1; /* snap pixel */
 static const int showbar = 1;       /* 0 means no bar */
 static const int topbar = 1;        /* 0 means bottom bar */
-static const char *fonts[] = {"Hack Nerd Font:size=10", "sans:size=10"};
+static const char *fonts[] = {
+  "JetBrainsMono Nerd Font:size=10:antialias=true:autohint=true",
+  "Source Han Sans CN:size=10:antialias=true:autohint=true"
+};
 static const char col_gray0[] = "#7c6f64";
 static const char col_gray1[] = "#928374";
 static const char col_gray2[] = "#a89984";
@@ -41,7 +44,7 @@ static const Rule rules[] = {
     {"Chromium", NULL, NULL, 1 << 8, 0, -1},
     {"firefox", NULL, NULL, 1 << 8, 0, -1},
     {"Zathura", NULL, NULL, 1 << 7, 0, -1},
-    {"mpv", NULL, NULL, ~0, 0, -1},
+    {"mpv", NULL, NULL, 1 << 1, 0, -1},
     {NULL, NULL, "Picture in picture", 0, 1, -1},
 };
 
