@@ -7,7 +7,7 @@ _thisdir=$(
 _ifname=wlan0
 
 settings() {
-  xset r rate 330 50
+  command xset r rate 330 50
 }
 
 statusbar() {
@@ -16,10 +16,9 @@ statusbar() {
   available_mem=$(awk '/MemAvailable/ { printf "%.2f\n", $2/1024/1024 }' /proc/meminfo)
   avg_load=$(awk '{print $1}' /proc/loadavg)
   free_disk=$(df -h / | grep dev | cut -f 8 -d\ )
-  SSID=$(iwctl station wlan0 show | awk '/Connected network/ {print $3}'
-)
+  SSID=$(command iwctl station wlan0 show | awk '/Connected network/ {print $3}')
 
-  xsetroot -name " $(date '+%H:%M')   ${SSID}   ${free_mem}/${available_mem}G   $avg_load   $free_disk   $bat%"
+  command xsetroot -name " $(date '+%H:%M')   ${SSID}   ${free_mem}/${available_mem}G   $avg_load   $free_disk   $bat%"
 }
 
 cron() {
@@ -27,7 +26,7 @@ cron() {
   while true; do
     [ $((i % 2)) -eq 0 ] && statusbar
 
-    [ $((i % 600)) -eq 0 ] && feh --randomize --bg-fill $wallpapers/*.png
+    [ $((i % 600)) -eq 0 ] && command feh --randomize --bg-fill $wallpapers/*.png
 
     sleep 2
     i=$((i + 2))
@@ -36,18 +35,15 @@ cron() {
 
 startup() {
   [ $1 ] && sleep $1
-  st -e tmux &
+  command st -e tmux &
 }
 
 daemons() {
   [ $1 ] && sleep $1
-  [ -x $(which flameshot) ] && flameshot &
-  [ -x $(which xbanish) ] && xbanish -m ne &
-  [ -x $(which dunst) ] && dunst &
-  [ -x $(which fcitx5) ] && fcitx5 -d 2>/dev/null &
-  [ -x $(which lf) ] && lf -server &
-  [ -x $(which picom) ] && picom -b
-  [ -x $(which clipcatd) ] && clipcatd
+  command flameshot &
+  command xbanish -m ne &
+  command fcitx5 -d 2>/dev/null &
+  command picom -b
 }
 
 settings &
