@@ -456,7 +456,8 @@ void arrange(Monitor *m) {
 }
 
 void arrangemon(Monitor *m) {
-  strncpy(m->ltsymbol, m->lt[m->sellt]->symbol, sizeof m->ltsymbol);
+  strncpy(m->ltsymbol, m->lt[m->sellt]->symbol, sizeof(m->ltsymbol) - 1);
+  m->ltsymbol[sizeof(m->ltsymbol) - 1] = '\0';
   if (m->lt[m->sellt]->arrange)
     m->lt[m->sellt]->arrange(m);
 }
@@ -715,7 +716,8 @@ Monitor *createmon(void) {
   gap_copy(m->gap, &default_gap);
   m->lt[0] = &layouts[0];
   m->lt[1] = &layouts[1 % LENGTH(layouts)];
-  strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
+  strncpy(m->ltsymbol, layouts[0].symbol, sizeof(m->ltsymbol) - 1);
+  m->ltsymbol[sizeof(m->ltsymbol) - 1] = '\0';
   m->pertag = ecalloc(1, sizeof(Pertag));
   m->pertag->curtag = m->pertag->prevtag = 1;
 
