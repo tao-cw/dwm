@@ -27,6 +27,7 @@
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
+#include <errno.h>
 #include <locale.h>
 #include <signal.h>
 #include <stdarg.h>
@@ -1871,9 +1872,15 @@ void showhide(Client *c) {
 
 void spawn(const Arg *arg) {
   struct sigaction sa;
+  pid_t pid;
 
   selmon->tagset[selmon->seltags] &= ~scratchtag;
-  if (fork() == 0) {
+
+  if ((pid = fork()) == -1) {
+    fprintf(stderr, "dwm: fork failed: %s\n", strerror(errno));
+    return;
+  }
+  if (pid == 0) {
     if (dpy)
       close(ConnectionNumber(dpy));
     setsid();
